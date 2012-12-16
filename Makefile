@@ -4,13 +4,15 @@ JS_BEAUTIFIER = $(NODE_PATH)/uglifyjs -b -i 2 -nm -ns
 CSS_COMPILER = $(NODE_PATH)/lessc --strict-imports
 CSS_MINIFIER = $(CSS_COMPILER) --yui-compress
 
-all:
+all: prerequisites
+
+prerequisites:
 	@npm install -d
-	@cp scripts/githooks/* .git/hooks/
-	@chmod -R +x .git/hooks/
+	-@cp scripts/githooks/* .git/hooks/
+	-@chmod -R +x .git/hooks/
 
 pre-build:
-	@mkdir -p build
+	-@mkdir -p build
 
 build: pre-build \
 	build/xcharts.js \
@@ -79,4 +81,4 @@ reporter='dot'
 test: build
 	@node_modules/.bin/mocha-phantomjs test/test.html --reporter ${reporter}
 
-.PHONY: lint test
+.PHONY: lint test all prerequisites pre-build build
