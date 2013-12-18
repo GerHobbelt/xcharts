@@ -89,7 +89,7 @@ lint:
 
 reporter='dot'
 test: build
-	@node_modules/.bin/mocha-phantomjs test/test.html --reporter ${reporter}
+	@${NODE_PATH}/mocha-phantomjs test/test.html --reporter ${reporter}
 
 pre-docs: clean build
 	@sed -i.bak 's/v[0-9]*\.[0-9]*\.[0-9]*/v${VERSION}/' docs.json
@@ -99,7 +99,7 @@ docs: pre-docs
 	@mkdir -p docs/css
 	@node_modules/.bin/lessc --yui-compress --include-path=docs/less docs/less/master.less docs/css/master.css
 	@node_modules/.bin/still docs -o ${TMP} -i "layouts" -i "json" -i "less" -i "macro"
-	@cp node_modules/d3/d3.v2.min.js ${TMP}/js/d3.v2.min.js
+	@cp node_modules/d3/d3.min.js ${TMP}/js/d3.min.js
 	@cp build/xcharts*js ${TMP}/js/
 	@git checkout master
 	@cp xcharts-build.tar.gz ${TMP}/xcharts-build.tar.gz
@@ -114,5 +114,8 @@ docs: pre-docs
 port = 3000
 test-docs: pre-docs
 	@node_modules/.bin/still-server docs/ -p ${port} -o
+
+publish: all clean build
+	@npm publish
 
 .PHONY: lint test clean docs test-docs
